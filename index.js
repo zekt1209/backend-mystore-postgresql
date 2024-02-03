@@ -57,6 +57,11 @@ app.get('/cart', (req, res) => {
   );
 });
 
+// hiddenPage
+app.get('/hiddenPage', (req, res) => {
+  res.sendFile("./public/hiddenPage.html", { root: __dirname });
+})
+
 app.listen(port, () => {
   console.log(`My App running at http://localhost:${port}`);
 });
