@@ -41,28 +41,32 @@ router.get("/:id", (req, res) => {
 
 router.post('/', (req, res) => {
   const body = req.body;
-  res.json({
+  const newUser = service.create(body);
+
+  res.status(201).json({
     message: 'user CREATED',
-    data: body,
+    data: newUser,
   });
 });
 
 router.patch('/:id', (req, res) => {
   const { id } = req.params;
   const body = req.body;
+  const changedUser = service.update(id, body);
 
   res.json({
     message: `user with id: ${id} MODIFIED`,
-    data: body,
+    data: changedUser,
   });
 });
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
+  const deletedUserId = service.delete(id);
 
   res.json({
     message: `user with id: ${id} DELETED`,
-    id,
+    id: deletedUserId,
   });
 });
 

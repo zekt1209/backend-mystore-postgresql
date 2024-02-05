@@ -49,29 +49,32 @@ router.get('/:orderId/products', (req, res) => {
 
 router.post('/', (req, res) => {
   const body = req.body;
+  const newOrder = service.create(body);
 
-  res.json({
+  res.status(201).json({
     message: 'purchase order CREATED',
-    data: body,
+    data: newOrder,
   });
 });
 
 router.patch('/:id', (req, res) => {
   const { id } = req.params;
   const body = req.body;
+  const changedOrder = service.update(id, body);
 
   res.json({
     message: `purchase order with id: ${id} UPDATED`,
-    data: body,
+    data: changedOrder,
   });
 });
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
+  const deletedOrderId = service.delete(id);
 
   res.json({
     message: `purchase order with id: ${id} DELETED`,
-    id,
+    id: deletedOrderId,
   });
 });
 

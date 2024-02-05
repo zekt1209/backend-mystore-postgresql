@@ -19,7 +19,19 @@ class CategoriesService {
     }
   }
 
-  create() {}
+  create(data) {
+
+    const { name } = data;
+
+    const newCategory = {
+      id: faker.string.nanoid(4),
+      name,
+    }
+
+    this.categories.push(newCategory);
+    return newCategory;
+
+  }
 
   find() {
     return this.categories;
@@ -29,9 +41,34 @@ class CategoriesService {
     return this.categories.find(category => category.id == id);
   }
 
-  update() {}
+  update(id, changes) {
 
-  delete() {}
+    const index = this.categories.findIndex(category => category.id === id);
+
+    if (index === -1) {
+      throw new Error('Category not found');
+    }
+
+    // This avoids overwritting and just apply the new changes
+    const category = this.categories[index];
+    this.categories[index] = {
+      ...category,
+      ...changes
+    }
+
+    return this.categories[index];
+  }
+
+  delete(id) {
+    const index = this.categories.findIndex(category => category.id === id);
+
+    if (index === -1) {
+      throw new Error('Category not found');
+    }
+
+    this.categories.splice(index, 1);
+    return id;
+  }
 
 }
 

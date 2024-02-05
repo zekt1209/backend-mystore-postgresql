@@ -60,7 +60,7 @@ class ProductsService {
       ...changes
      };
 
-    return this.products[index]
+    return this.products[index];
 
   }
 

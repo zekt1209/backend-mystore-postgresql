@@ -52,11 +52,9 @@ router.get('/:categoryId/products/:productId', (req, res) => {
 
 router.post('/', (req, res) => {
   const body = req.body;
+  const newProduct = service.create(body);
 
-  res.json({
-    message: 'Category CREATED',
-    data: body,
-  });
+  res.status(201).json({ message: 'Category CREATED', data: newProduct });
 
 });
 
@@ -64,20 +62,17 @@ router.patch('/:id', (req, res) => {
   const { id } = req.params;
   const body = req.body;
 
-  res.json({
-    message: `Category with id: ${id} UPDATED` ,
-    data: body,
-  });
+  const changedCategory = service.update(id, body);
+
+  res.json({ message: `Category with id: ${id} UPDATED` , data: changedCategory });
 
 });
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
+  const deletedCategoryId = service.delete(id);
 
-  res.json({
-    message: `Category with id: ${id} DELETED` ,
-    id,
-  });
+  res.json({ message: `Category with id: ${id} DELETED` , id: deletedCategoryId });
 
 });
 

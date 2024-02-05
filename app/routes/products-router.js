@@ -43,19 +43,19 @@ router.post('/', (req, res) => {
 router.patch('/:id', (req, res) => {
   const { id } = req.params;
   const body = req.body;
-  const productChanged = service.update(id, body);
+  const changedProduct = service.update(id, body);
 
-  res.json({ message: `Product with id: ${id}, UPDATED`, data: productChanged });
+  res.json({ message: `Product with id: ${id}, UPDATED`, data: changedProduct });
 });
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
-  const productDeletedId = service.delete(id);
+  const deletedProductId = service.delete(id);
 
     res.json(
       {
         message: `Product with id: ${id}, DELETED`,
-        id: productDeletedId
+        id: deletedProductId
       }
     );
 });
