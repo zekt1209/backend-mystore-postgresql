@@ -21,7 +21,19 @@ class ProductsService {
     }
   }
 
-  create() {
+  create(data) {
+
+    const { name, price, image } = data;
+
+    const newProduct = {
+      id: faker.string.nanoid(4),
+      name,
+      price,
+      image,
+    }
+
+    this.products.push(newProduct);
+    return newProduct;
 
   }
 
