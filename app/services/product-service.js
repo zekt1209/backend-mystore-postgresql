@@ -9,7 +9,7 @@ class ProductsService {
   }
 
   generate() {
-    const limit = 100;
+    const limit = 10;
 
     for (let i = 0; i < limit; i++) {
       this.products.push({
@@ -45,8 +45,37 @@ class ProductsService {
     return this.products.find(product => product.id === id);
   }
 
-  update() {}
-  delete() {}
+  update(id, changes) {
+
+    const index = this.products.findIndex(product => product.id === id);
+
+    if (index === -1) {
+      throw new Error('Product not found')
+    }
+
+    // This avoids overwritting and just apply the new changes
+    const product = this.products[index];
+     this.products[index] = {
+      ...product,
+      ...changes
+     };
+
+    return this.products[index]
+
+  }
+
+  delete(id) {
+
+    const index = this.products.findIndex(product => product.id === id);
+
+    if (index === -1) {
+      throw new Error('Product not found')
+    }
+
+    this.products.splice(index, 1);
+    return { id };
+
+  }
 
 }
 
