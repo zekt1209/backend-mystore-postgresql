@@ -18,6 +18,7 @@ router.get('/', (req, res) => {
   }
 
   res.json(products);
+
 });
 
 router.get('/filter', (req, res) => {
@@ -32,6 +33,15 @@ router.get('/:id', (req, res) => {
     name: 'Product 2',
     price: 800,
   });
+});
+
+router.post('/', (req, res) => {
+  const body = req.body;
+
+  res.send({
+    message: 'Created',
+    data: body,
+  })
 });
 
 module.exports = router;

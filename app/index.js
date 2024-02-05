@@ -4,7 +4,7 @@ const app = express();
 const port = 3000;
 
 const routerApi = require('./routes/index');
-
+app.use(express.json());
 
 // Rise EndPoint
 app.get('/', (req, res) => {
