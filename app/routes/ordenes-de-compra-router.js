@@ -57,4 +57,32 @@ router.get('/:orderId/products', (req, res) => {
   );
 });
 
+router.post('/', (req, res) => {
+  const body = req.body;
+
+  res.json({
+    message: 'purchase order CREATED',
+    data: body,
+  });
+});
+
+router.patch('/:id', (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+
+  res.json({
+    message: `purchase order with id: ${id} UPDATED`,
+    data: body,
+  });
+});
+
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
+
+  res.json({
+    message: `purchase order with id: ${id} DELETED`,
+    id,
+  });
+});
+
 module.exports = router;

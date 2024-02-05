@@ -11,6 +11,7 @@ router.get('/', (req, res) => {
 
   for (let i = 0; i < limit; i++) {
     products.push({
+      id: faker.string.nanoid(4),
       name: faker.commerce.productName(),
       price: parseInt(faker.commerce.price(), 10),
       image: faker.image.url(),
@@ -32,6 +33,7 @@ router.get('/:id', (req, res) => {
     id,
     name: 'Product 2',
     price: 800,
+    image: faker.image.url(),
   });
 });
 
@@ -42,6 +44,29 @@ router.post('/', (req, res) => {
     message: 'Created',
     data: body,
   })
+});
+
+router.patch('/:id', (req, res) => {
+  const { id } = req.params;
+const body = req.body;
+
+  res.send(
+    {
+      message: `Product with id: ${id}, UPDATED`,
+      data: body,
+    }
+  );
+});
+
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
+
+    res.send(
+      {
+        message: `Product with id: ${id}, DELETED`,
+        id: id,
+      }
+    );
 });
 
 module.exports = router;
