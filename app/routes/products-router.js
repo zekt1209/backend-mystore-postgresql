@@ -29,18 +29,26 @@ router.get('/filter', (req, res) => {
 router.get('/:id', (req, res) => {
   // Destructuracion de objetos
   const {id} = req.params;
-  res.json({
-    id,
-    name: 'Product 2',
-    price: 800,
-    image: faker.image.url(),
-  });
+
+  if (id == '999') {
+    res.status(404).json({
+      message: 'Not fount',
+    });
+  } else {
+    res.json({
+      id,
+      name: 'Product 2',
+      price: 800,
+      image: faker.image.url(),
+    });
+  }
+
 });
 
 router.post('/', (req, res) => {
   const body = req.body;
 
-  res.send({
+  res.status(201).json({
     message: 'Created',
     data: body,
   })
@@ -50,7 +58,7 @@ router.patch('/:id', (req, res) => {
   const { id } = req.params;
 const body = req.body;
 
-  res.send(
+  res.json(
     {
       message: `Product with id: ${id}, UPDATED`,
       data: body,
@@ -61,7 +69,7 @@ const body = req.body;
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
 
-    res.send(
+    res.json(
       {
         message: `Product with id: ${id}, DELETED`,
         id: id,
