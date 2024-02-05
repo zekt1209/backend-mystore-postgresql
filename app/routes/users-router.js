@@ -2,7 +2,11 @@ const express = require('express');
 const { faker } = require('@faker-js/faker');
 const router = express.Router();
 
-// Usuarios
+// Logica de negocio
+const UsersService = require('./../services/user-service');
+const service = new UsersService();
+
+// Endpoints de Usuarios
 router.get('/', (req, res) => {
 
   const { limit, offset } = req.query;
@@ -17,39 +21,16 @@ router.get('/', (req, res) => {
     );
 
   } else {
-
-    res.json(
-      [
-        {
-          id: 1,
-          name: 'Victor',
-          email: "victor@hotmail.com",
-        },
-        {
-          id: 2,
-          name: 'Marco',
-          email: "marco@hotmail.com",
-        },
-        {
-          id: 3,
-          name: 'Angel',
-          email: "angel@gmail.com",
-        }
-      ]
-    );
+    const users = service.find();
+    res.json(users);
   }
 
 });
 
 router.get("/:id", (req, res) => {
   const { id } = req.params;
-  res.json(
-    {
-      id,
-      name: 'Victor',
-      email: "victor@hotmail.com",
-    }
-  );
+  const user = service.findOne(id);
+  res.json(user);
 });
 
 router.post('/', (req, res) => {

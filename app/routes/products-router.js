@@ -2,10 +2,11 @@ const express = require('express');
 const { faker } = require('@faker-js/faker');
 const router = express.Router();
 
+// Logica de negocio
 const ProductsService = require('./../services/product-service');
 const service = new ProductsService();
 
-// Products
+// Endpoints de Products
 router.get('/', (req, res) => {
 
   const products = service.find();
