@@ -17,7 +17,13 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   const { id } = req.params;
   const purchaseOrder = service.findOne(id);
-  res.json(purchaseOrder);
+
+  if (!purchaseOrder) {
+    res.status(404).json({message: `La orden de compra con id ${id} no existe`});
+  } else {
+    res.json(purchaseOrder);
+  }
+
 });
 
 router.get('/:orderId/products', (req, res) => {

@@ -30,7 +30,13 @@ router.get('/', (req, res) => {
 router.get("/:id", (req, res) => {
   const { id } = req.params;
   const user = service.findOne(id);
-  res.json(user);
+
+  if (!user) {
+    res.status(404).json({message: `El usuario con id ${id} no existe`});
+  } else {
+    res.json(user);
+  }
+
 });
 
 router.post('/', (req, res) => {

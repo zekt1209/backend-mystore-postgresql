@@ -17,7 +17,13 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   const { id } = req.params;
   const category = service.findOne(id);
-  res.json(category);
+
+  if (!category) {
+    res.status(404).json({message: `La categoria con id ${id} no existe`});
+  } else {
+    res.json(category);
+  }
+
 
   // Preferred Structure
   //   {

@@ -22,7 +22,13 @@ router.get('/:id', (req, res) => {
   // Destructuracion de objetos
   const {id} = req.params;
   const product = service.findOne(id);
-  res.json(product);
+
+  if (!product) {
+    res.status(404).json({message: `El producto con id ${id} no existe`});
+  } else {
+    res.json(product);
+  }
+
 });
 
 router.post('/', (req, res) => {
