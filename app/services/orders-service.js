@@ -18,7 +18,7 @@ class OrdersService {
     }
   }
 
-  create(data) {
+  async create(data) {
     // Destructuracion de objetos
     const { total } = data;
     let lastOrderNumber = 0;
@@ -40,15 +40,15 @@ class OrdersService {
 
   }
 
-  find() {
+  async find() {
     return this.purchaseOrders;
   }
 
-  findOne(id) {
+  async findOne(id) {
     return this.purchaseOrders.find(order => order.id == id);
   }
 
-  update(id, changes) {
+  async update(id, changes) {
 
     const index = this.purchaseOrders.findIndex(order => order.id == id);
 
@@ -66,7 +66,7 @@ class OrdersService {
 
   }
 
-  delete(id) {
+  async delete(id) {
     const index = this.purchaseOrders.findIndex(order => order.id == id);
 
     if (index === -1) {

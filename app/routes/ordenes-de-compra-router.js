@@ -7,16 +7,16 @@ const OrdersService = require('./../services/orders-service');
 const service = new OrdersService();
 
 // Endpoints Ordenes de compra
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
 
-  const purchaseOrders = service.find();
+  const purchaseOrders = await service.find();
   res.json(purchaseOrders);
 
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  const purchaseOrder = service.findOne(id);
+  const purchaseOrder = await service.findOne(id);
 
   if (!purchaseOrder) {
     res.status(404).json({message: `La orden de compra con id ${id} no existe`});
@@ -47,9 +47,9 @@ router.get('/:orderId/products', (req, res) => {
   );
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const body = req.body;
-  const newOrder = service.create(body);
+  const newOrder = await service.create(body);
 
   res.status(201).json({
     message: 'purchase order CREATED',
@@ -57,25 +57,37 @@ router.post('/', (req, res) => {
   });
 });
 
-router.patch('/:id', (req, res) => {
-  const { id } = req.params;
-  const body = req.body;
-  const changedOrder = service.update(id, body);
+router.patch('/:id', async (req, res) => {
+  try {
 
-  res.json({
-    message: `purchase order with id: ${id} UPDATED`,
-    data: changedOrder,
-  });
+    const { id } = req.params;
+    const body = req.body;
+    const changedOrder = await service.update(id, body);
+
+    res.json({
+      message: `purchase order with id: ${id} UPDATED`,
+      data: changedOrder,
+    });
+
+  } catch (err) {
+    res.json({ message: err.message });
+  }
 });
 
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  const deletedOrderId = service.delete(id);
+router.delete('/:id', async (req, res) => {
+  try {
 
-  res.json({
-    message: `purchase order with id: ${id} DELETED`,
-    id: deletedOrderId,
-  });
+    const { id } = req.params;
+    const deletedOrderId = await service.delete(id);
+
+    res.json({
+      message: `purchase order with id: ${id} DELETED`,
+      id: deletedOrderId,
+    });
+
+  } catch (err) {
+    res.json({ message: err.message });
+  }
 });
 
 module.exports = router;

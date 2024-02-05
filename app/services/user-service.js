@@ -29,7 +29,7 @@ class UsersService {
     })
   }
 
-  create(data) {
+  async create(data) {
 
     const { name, email, role } = data;
 
@@ -45,15 +45,15 @@ class UsersService {
 
   }
 
-  find() {
+  async find() {
     return this.users;
   }
 
-  findOne(id) {
+  async findOne(id) {
     return this.users.find(user => user.id == id);
   }
 
-  update(id, changes) {
+  async update(id, changes) {
     const index = this.users.findIndex(user => user.id == id)
 
     if (index === -1) {
@@ -71,7 +71,7 @@ class UsersService {
 
   }
 
-  delete(id) {
+  async delete(id) {
     const index = this.users.findIndex(user => user.id == id)
 
     if (index === -1) {

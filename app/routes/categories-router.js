@@ -7,16 +7,16 @@ const CategoriesService = require('./../services/category-service');
 const service = new CategoriesService();
 
 // Endpoints de categories
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
 
-  const categories = service.find();
+  const categories = await service.find();
   res.json(categories);
 
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  const category = service.findOne(id);
+  const category = await service.findOne(id);
 
   if (!category) {
     res.status(404).json({message: `La categoria con id ${id} no existe`});
@@ -50,29 +50,39 @@ router.get('/:categoryId/products/:productId', (req, res) => {
   });
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const body = req.body;
-  const newProduct = service.create(body);
+  const newProduct = await service.create(body);
 
   res.status(201).json({ message: 'Category CREATED', data: newProduct });
 
 });
 
-router.patch('/:id', (req, res) => {
-  const { id } = req.params;
-  const body = req.body;
+router.patch('/:id', async (req, res) => {
+  try {
 
-  const changedCategory = service.update(id, body);
+    const { id } = req.params;
+    const body = req.body;
 
-  res.json({ message: `Category with id: ${id} UPDATED` , data: changedCategory });
+    const changedCategory = await service.update(id, body);
+
+    res.json({ message: `Category with id: ${id} UPDATED` , data: changedCategory });
+
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
 
 });
 
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  const deletedCategoryId = service.delete(id);
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedCategoryId = await service.delete(id);
 
-  res.json({ message: `Category with id: ${id} DELETED` , id: deletedCategoryId });
+    res.json({ message: `Category with id: ${id} DELETED` , id: deletedCategoryId });
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
 
 });
 

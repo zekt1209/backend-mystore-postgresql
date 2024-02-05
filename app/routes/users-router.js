@@ -7,7 +7,7 @@ const UsersService = require('./../services/user-service');
 const service = new UsersService();
 
 // Endpoints de Usuarios
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
 
   const { limit, offset } = req.query;
 
@@ -21,15 +21,15 @@ router.get('/', (req, res) => {
     );
 
   } else {
-    const users = service.find();
+    const users = await service.find();
     res.json(users);
   }
 
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const user = service.findOne(id);
+  const user = await service.findOne(id);
 
   if (!user) {
     res.status(404).json({message: `El usuario con id ${id} no existe`});
@@ -39,9 +39,9 @@ router.get("/:id", (req, res) => {
 
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const body = req.body;
-  const newUser = service.create(body);
+  const newUser = await service.create(body);
 
   res.status(201).json({
     message: 'user CREATED',
@@ -49,25 +49,38 @@ router.post('/', (req, res) => {
   });
 });
 
-router.patch('/:id', (req, res) => {
-  const { id } = req.params;
-  const body = req.body;
-  const changedUser = service.update(id, body);
+router.patch('/:id', async (req, res) => {
+  try {
 
-  res.json({
-    message: `user with id: ${id} MODIFIED`,
-    data: changedUser,
-  });
+    const { id } = req.params;
+    const body = req.body;
+    const changedUser = await service.update(id, body);
+
+    res.json({
+      message: `user with id: ${id} MODIFIED`,
+      data: changedUser,
+    });
+
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+
 });
 
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  const deletedUserId = service.delete(id);
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedUserId = await service.delete(id);
 
-  res.json({
-    message: `user with id: ${id} DELETED`,
-    id: deletedUserId,
-  });
+    res.json({
+      message: `user with id: ${id} DELETED`,
+      id: deletedUserId,
+    });
+
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+
 });
 
 module.exports = router;

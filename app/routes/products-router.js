@@ -7,9 +7,9 @@ const ProductsService = require('./../services/product-service');
 const service = new ProductsService();
 
 // Endpoints de Products
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
 
-  const products = service.find();
+  const products = await service.find();
   res.json(products);
 
 });
@@ -18,10 +18,10 @@ router.get('/filter', (req, res) => {
   res.send('Soy un filtro');
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   // Destructuracion de objetos
   const {id} = req.params;
-  const product = service.findOne(id);
+  const product = await service.findOne(id);
 
   if (!product) {
     res.status(404).json({message: `El producto con id ${id} no existe`});
@@ -31,33 +31,47 @@ router.get('/:id', (req, res) => {
 
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 
   const body = req.body;
-  const newProduct = service.create(body);
+  const newProduct = await service.create(body);
 
   res.status(201).json({ message: 'Created', data: newProduct })
 
 });
 
-router.patch('/:id', (req, res) => {
-  const { id } = req.params;
-  const body = req.body;
-  const changedProduct = service.update(id, body);
+router.patch('/:id', async (req, res) => {
 
-  res.json({ message: `Product with id: ${id}, UPDATED`, data: changedProduct });
+  try {
+
+    const { id } = req.params;
+    const body = req.body;
+    const changedProduct = await service.update(id, body);
+
+    res.json({ message: `Product with id: ${id}, UPDATED`, data: changedProduct });
+
+  } catch (err) {
+    res.status(404).json({ message: err.message});
+  }
+
 });
 
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  const deletedProductId = service.delete(id);
+router.delete('/:id', async (req, res) => {
+  try {
 
-    res.json(
-      {
-        message: `Product with id: ${id}, DELETED`,
-        id: deletedProductId
-      }
-    );
+    const { id } = req.params;
+    const deletedProductId = await service.delete(id);
+
+      res.json(
+        {
+          message: `Product with id: ${id}, DELETED`,
+          id: deletedProductId
+        }
+      );
+
+  } catch (err) {
+    res.status(404).json({ message: err.message});
+  }
 });
 
 module.exports = router;
