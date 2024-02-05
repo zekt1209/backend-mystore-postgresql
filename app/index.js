@@ -1,7 +1,8 @@
 const express = require('express');
-const { faker } = require('@faker-js/faker');
 const app = express();
 const port = 3000;
+// Middlewares de error
+const { logErrors, errorHandler } = require('./middlewares/error-handler');
 
 const routerApi = require('./routes/index');
 app.use(express.json());
@@ -18,6 +19,11 @@ app.get('/hiddenPage', (req, res) => {
 
 // Endpoints base que mandan llamar sus routers cada una
 routerApi(app);
+
+// Llamando a los middlewares
+app.use(logErrors);
+app.use(errorHandler);
+
 
 app.listen(port, () => {
   console.log(`My App running at http://localhost:${port}`);

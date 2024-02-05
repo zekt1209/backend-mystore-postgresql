@@ -6,6 +6,12 @@ const router = express.Router();
 const ProductsService = require('./../services/product-service');
 const service = new ProductsService();
 
+// Middleware example
+// router.use('/', (req, res, next) => {
+//   console.log('Request Type:', req.method)
+//   next()
+// })
+
 // Endpoints de Products
 router.get('/', async (req, res) => {
 
@@ -18,15 +24,21 @@ router.get('/filter', (req, res) => {
   res.send('Soy un filtro');
 })
 
-router.get('/:id', async (req, res) => {
-  // Destructuracion de objetos
-  const {id} = req.params;
-  const product = await service.findOne(id);
+router.get('/:id', async (req, res, next) => {
+  try {
 
-  if (!product) {
-    res.status(404).json({message: `El producto con id ${id} no existe`});
-  } else {
-    res.json(product);
+    // Destructuracion de objetos
+    const {id} = req.params;
+    const product = await service.findOne(id);
+
+    if (!product) {
+      res.status(404).json({message: `El producto con id ${id} no existe`});
+    } else {
+      res.json(product);
+    }
+
+  } catch (err) {
+    next(err);
   }
 
 });
