@@ -1,4 +1,5 @@
 const { faker } = require('@faker-js/faker');
+const boom = require('@hapi/boom');
 
 // CRUD para la entidad Producto desde la logica de negocio
 class ProductsService {
@@ -17,6 +18,7 @@ class ProductsService {
         name: faker.commerce.productName(),
         price: parseInt(faker.commerce.price(), 10),
         image: faker.image.url(),
+        isBlocked: faker.datatype.boolean(),
       });
     }
   }
@@ -48,8 +50,17 @@ class ProductsService {
   }
 
   async findOne(id) {
-    const name = this.getTotal();
-    return this.products.find(product => product.id === id);
+    const product = this.products.find(product => product.id === id);
+
+    if (!product) {
+      throw boom.notFound('product not found');
+    }
+
+    if (product.isBlocked) {
+      throw boom.conflict('product is blocked');
+    }
+
+    return product;
   }
 
   async update(id, changes) {
@@ -57,7 +68,8 @@ class ProductsService {
     const index = this.products.findIndex(product => product.id === id);
 
     if (index === -1) {
-      throw new Error('Product not found')
+      // throw new Error('Product not found')
+      throw boom.notFound('product not found'); // Manejo de errores con boom
     }
 
     // This avoids overwritting and just apply the new changes
@@ -76,7 +88,7 @@ class ProductsService {
     const index = this.products.findIndex(product => product.id === id);
 
     if (index === -1) {
-      throw new Error('Product not found');
+      throw boom.notFound('product not found');
     }
 
     this.products.splice(index, 1);
