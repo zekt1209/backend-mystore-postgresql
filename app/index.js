@@ -7,9 +7,21 @@ const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/err
 const routerApi = require('./routes/index');
 app.use(express.json());
 
+
+// Middleware rise endpoint
+app.get('/', (req, res, next) => {
+  console.log('Hello world from Middleware!');
+  req.customParamV = 'Hey!';
+  next();
+}, (req, res, next) => {
+  console.log('Another middleware in the rise path! I will print a custom request Header')
+  console.log(req.customParamV);
+  next();
+});
+
 // Rise EndPoint
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('<h1>Hello World!</h1>');
 });
 
 // hiddenPage

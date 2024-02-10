@@ -1,9 +1,11 @@
 const Joi = require('joi');
 
+// Rules for DataTypes
 const id = Joi.string().uuid();
 const name = Joi.string().alphanum().min(3).max(15);
 const price = Joi.number().integer().min(10);
 
+// Required or Optional
 const createProductSchema = Joi.object({
   name: name.required(),
   price: price.required(),
