@@ -7,7 +7,7 @@ function validatorHandler(schema, property) {
   // Closure para lograr middleware dinamico
   return (req, res, next) => {
     const data = req[property];
-    const { error } = schema.validate(data);
+    const { error } = schema.validate(data, { abortEarly: false });
     if (error) {
       // Manejo de errores con boom
       next(boom.badRequest(error));
