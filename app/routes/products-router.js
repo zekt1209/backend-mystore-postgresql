@@ -51,31 +51,38 @@ router.get('/:id',
   }
 );
 
-router.post('/', async (req, res) => {
+router.post('/',
+  validatorHandler(createProductSchema, 'body'),
+  async (req, res) => {
 
-  const body = req.body;
-  const newProduct = await service.create(body);
-
-  res.status(201).json({ message: 'Created', data: newProduct })
-
-});
-
-router.patch('/:id', async (req, res, next) => {
-
-  try {
-
-    const { id } = req.params;
     const body = req.body;
-    const changedProduct = await service.update(id, body);
+    const newProduct = await service.create(body);
 
-    res.json({ message: `Product with id: ${id}, UPDATED`, data: changedProduct });
+    res.status(201).json({ message: 'Created', data: newProduct })
 
-  } catch (err) {
-    // res.status(404).json({ message: err.message});
-    next(err);
   }
+);
 
-});
+router.patch('/:id',
+  validatorHandler(getProductSchema, 'params'),
+  validatorHandler(updateProductSchema, 'body'),
+  async (req, res, next) => {
+
+    try {
+
+      const { id } = req.params;
+      const body = req.body;
+      const changedProduct = await service.update(id, body);
+
+      res.json({ message: `Product with id: ${id}, UPDATED`, data: changedProduct });
+
+    } catch (err) {
+      // res.status(404).json({ message: err.message});
+      next(err);
+    }
+
+  }
+);
 
 router.delete('/:id', async (req, res) => {
   try {
