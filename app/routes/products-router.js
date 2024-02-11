@@ -6,6 +6,11 @@ const router = express.Router();
 const ProductsService = require('./../services/product-service');
 const service = new ProductsService();
 
+// Middleware Dinamico
+const validatorHandler = require('../middlewares/validator-handler');
+// Schemas for DTO Validators
+const { createProductSchema, updateProductSchema, getProductSchema } = require('../schemas/product-schema');
+
 // Middleware example
 // router.use('/', (req, res, next) => {
 //   console.log('Request Type:', req.method)
@@ -24,24 +29,27 @@ router.get('/filter', (req, res) => {
   res.send('Soy un filtro');
 })
 
-router.get('/:id', async (req, res, next) => {
-  try {
+router.get('/:id',
+  validatorHandler(getProductSchema, 'params'),
+  async (req, res, next) => {
+    try {
 
-    // Destructuracion de objetos
-    const {id} = req.params;
-    const product = await service.findOne(id);
+      // Destructuracion de objetos
+      const {id} = req.params;
+      const product = await service.findOne(id);
 
-    if (!product) {
-      res.status(404).json({message: `El producto con id ${id} no existe`});
-    } else {
-      res.json(product);
+      if (!product) {
+        res.status(404).json({message: `El producto con id ${id} no existe`});
+      } else {
+        res.json(product);
+      }
+
+    } catch (err) {
+      next(err);
     }
 
-  } catch (err) {
-    next(err);
   }
-
-});
+);
 
 router.post('/', async (req, res) => {
 

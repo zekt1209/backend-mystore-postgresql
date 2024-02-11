@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 // Rules for DataTypes
-const id = Joi.string().uuid();
+const id = Joi.string();
 const name = Joi.string().alphanum().min(3).max(15);
 const price = Joi.number().integer().min(10);
 
