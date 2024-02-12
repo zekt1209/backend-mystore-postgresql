@@ -7,8 +7,23 @@ const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/err
 
 const routerApi = require('./routes/index');
 app.use(express.json());
-app.use(cors);
 
+// --- Dar acceso a ciertos dominios que no sean de nuestro origen -----
+const whiteList = ['http://localhost:8080', 'http://localhost:5500'];
+
+const options = {
+  origin: (origin, callback) => {
+    if (whiteList.includes(origin)) {
+      callback(null, true);
+    }
+    else {
+      callback(new Error('No permitido'), false);
+    }
+  }
+};
+
+app.use(cors(options));
+// ---------------------------------------------------------------------
 
 // Middleware rise endpoint
 app.get('/', (req, res, next) => {
@@ -38,6 +53,7 @@ routerApi(app);
 app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
+
 
 
 app.listen(port, () => {
