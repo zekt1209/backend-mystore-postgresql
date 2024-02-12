@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = 3000;
 // Middlewares de error
@@ -6,6 +7,7 @@ const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/err
 
 const routerApi = require('./routes/index');
 app.use(express.json());
+app.use(cors);
 
 
 // Middleware rise endpoint
