@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hello World from Frontend</h1>
+    <h2>List of categories:</h2>
+    <div class="category_container">
+        <div class="category_component">
+            <p>ID: </p>
+            <p>Name: </p>
+        </div>
+    </div>
+    <script>
+        console.log('Hello!');
+        (async () => {
+            const response = await fetch('http://localhost:3000/api/v1/categories');
+            const data = await response.json();
+            console.log(data);
+
+            const categoryContainer = document.querySelector('.category_container');
+            const categories = [];
+
+            // Maquetar los productos en HTML
+            for(let i = 0; i < data.length; i++) {
+                let component = `
+                <div>
+                    <p>ID: ${data[i].id}</p>
+                    <p>Name: ${data[i].name}</p>
+                </div>`;
+                categories.push(component);
+            }
+
+            console.log(categories)
+
+            categories.forEach(categoryComponent => {
+                categoryContainer.insertAdjacentHTML('beforeend', categoryComponent);
+            })
+
+            
+        })();
+    </script>
+</body>
+</html>
