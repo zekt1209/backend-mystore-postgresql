@@ -26,7 +26,7 @@ app.use(cors(options));
 // ---------------------------------------------------------------------
 
 // Middleware rise endpoint
-app.get('/api/', (req, res, next) => {
+app.get('/api', (req, res, next) => {
   console.log('Hello world from Middleware!');
   req.customParamV = 'Hey!';
   next();
@@ -37,7 +37,7 @@ app.get('/api/', (req, res, next) => {
 });
 
 // Rise EndPoint
-app.get('/api/', (req, res) => {
+app.get('/api', (req, res) => {
   res.send('<h1>Hello World!</h1>');
 });
 
