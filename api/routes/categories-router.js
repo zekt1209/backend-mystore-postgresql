@@ -3,7 +3,7 @@ const { faker } = require('@faker-js/faker');
 const router = express.Router();
 
 // Logica de negocio
-const CategoriesService = require('./../services/category-service');
+const CategoriesService = require('../services/category-service');
 const service = new CategoriesService();
 
 // Middleware Dinamico

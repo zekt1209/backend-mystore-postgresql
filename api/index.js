@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 // Middlewares de error
 const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error-handler');
 
@@ -26,7 +26,7 @@ app.use(cors(options));
 // ---------------------------------------------------------------------
 
 // Middleware rise endpoint
-app.get('/', (req, res, next) => {
+app.get('/api/', (req, res, next) => {
   console.log('Hello world from Middleware!');
   req.customParamV = 'Hey!';
   next();
@@ -37,12 +37,12 @@ app.get('/', (req, res, next) => {
 });
 
 // Rise EndPoint
-app.get('/', (req, res) => {
+app.get('/api/', (req, res) => {
   res.send('<h1>Hello World!</h1>');
 });
 
 // hiddenPage
-app.get('/hiddenPage', (req, res) => {
+app.get('/api/hiddenPage', (req, res) => {
   res.sendFile("./public/hiddenPage.html", { root: __dirname });
 })
 
