@@ -6,6 +6,13 @@ const router = express.Router();
 const OrdersService = require('./../services/orders-service');
 const service = new OrdersService();
 
+// Middleware dinamico
+const validatorHandler = require('../middlewares/validator-handler');
+
+// Schemas for DTO Validators
+const { createOrderSchema, updateOrderSchema, getOrderSchema, deleteOrderSchema } = require('../schemas/order-schema');
+const { getProductSchema } = require('../schemas/product-schema');
+
 // Endpoints Ordenes de compra
 router.get('/', async (req, res) => {
 
@@ -14,17 +21,20 @@ router.get('/', async (req, res) => {
 
 });
 
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
-  const purchaseOrder = await service.findOne(id);
+router.get('/:id',
+  validatorHandler(getOrderSchema, 'params'),
+  async (req, res) => {
+    const { id } = req.params;
+    const purchaseOrder = await service.findOne(id);
 
-  if (!purchaseOrder) {
-    res.status(404).json({message: `La orden de compra con id ${id} no existe`});
-  } else {
-    res.json(purchaseOrder);
+    if (!purchaseOrder) {
+      res.status(404).json({message: `La orden de compra con id ${id} no existe`});
+    } else {
+      res.json(purchaseOrder);
+    }
+
   }
-
-});
+);
 
 router.get('/:orderId/products', (req, res) => {
   const { orderId } = req.params;
@@ -47,47 +57,57 @@ router.get('/:orderId/products', (req, res) => {
   );
 });
 
-router.post('/', async (req, res) => {
-  const body = req.body;
-  const newOrder = await service.create(body);
-
-  res.status(201).json({
-    message: 'purchase order CREATED',
-    data: newOrder,
-  });
-});
-
-router.patch('/:id', async (req, res) => {
-  try {
-
-    const { id } = req.params;
+router.post('/',
+  validatorHandler(createOrderSchema, 'body'),
+  async (req, res) => {
     const body = req.body;
-    const changedOrder = await service.update(id, body);
+    const newOrder = await service.create(body);
 
-    res.json({
-      message: `purchase order with id: ${id} UPDATED`,
-      data: changedOrder,
+    res.status(201).json({
+      message: 'purchase order CREATED',
+      data: newOrder,
     });
-
-  } catch (err) {
-    res.json({ message: err.message });
   }
-});
+);
 
-router.delete('/:id', async (req, res) => {
-  try {
+router.patch('/:id',
+  validatorHandler(getOrderSchema, 'params'),
+  validatorHandler(updateOrderSchema, 'body'),
+  async (req, res) => {
+    try {
 
-    const { id } = req.params;
-    const deletedOrderId = await service.delete(id);
+      const { id } = req.params;
+      const body = req.body;
+      const changedOrder = await service.update(id, body);
 
-    res.json({
-      message: `purchase order with id: ${id} DELETED`,
-      id: deletedOrderId,
-    });
+      res.json({
+        message: `purchase order with id: ${id} UPDATED`,
+        data: changedOrder,
+      });
 
-  } catch (err) {
-    res.json({ message: err.message });
+    } catch (err) {
+      res.json({ message: err.message });
+    }
   }
-});
+);
+
+router.delete('/:id',
+  validatorHandler(deleteOrderSchema, 'params'),
+  async (req, res) => {
+    try {
+
+      const { id } = req.params;
+      const deletedOrderId = await service.delete(id);
+
+      res.json({
+        message: `purchase order with id: ${id} DELETED`,
+        id: deletedOrderId,
+      });
+
+    } catch (err) {
+      res.json({ message: err.message });
+    }
+  }
+);
 
 module.exports = router;

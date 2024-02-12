@@ -9,7 +9,7 @@ const service = new ProductsService();
 // Middleware Dinamico
 const validatorHandler = require('../middlewares/validator-handler');
 // Schemas for DTO Validators
-const { createProductSchema, updateProductSchema, getProductSchema } = require('../schemas/product-schema');
+const { createProductSchema, updateProductSchema, getProductSchema, deleteProductSchema } = require('../schemas/product-schema');
 
 // Middleware example
 // router.use('/', (req, res, next) => {
@@ -84,22 +84,25 @@ router.patch('/:id',
   }
 );
 
-router.delete('/:id', async (req, res) => {
-  try {
+router.delete('/:id',
+  validatorHandler(deleteProductSchema, 'params'),
+  async (req, res) => {
+    try {
 
-    const { id } = req.params;
-    const deletedProductId = await service.delete(id);
+      const { id } = req.params;
+      const deletedProductId = await service.delete(id);
 
-      res.json(
-        {
-          message: `Product with id: ${id}, DELETED`,
-          id: deletedProductId
-        }
-      );
+        res.json(
+          {
+            message: `Product with id: ${id}, DELETED`,
+            id: deletedProductId
+          }
+        );
 
-  } catch (err) {
-    res.status(404).json({ message: err.message});
+    } catch (err) {
+      res.status(404).json({ message: err.message});
+    }
   }
-});
+);
 
 module.exports = router;
