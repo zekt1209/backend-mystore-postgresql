@@ -1,5 +1,8 @@
 const { faker } = require('@faker-js/faker');
+
+// Conexion con la DB
 const getConnection = require('../libs/postgresql');
+const getPoolConnection = require('../libs/postgresql-pool');
 
 class UsersService {
 
@@ -7,6 +10,8 @@ class UsersService {
   constructor() {
     this.users = [];
     this.generate();
+    this.pool = getPoolConnection;
+    this.pool.on('error', (err) => console.error(err));
   }
 
   generate() {
@@ -47,10 +52,18 @@ class UsersService {
   }
 
   async find() {
-    const client = await getConnection();
-    const res = await client.query('SELECT * FROM tasks');
+    // --- Normal Connection
+    // * const client = await getConnection();
+    // * const res = await client.query('SELECT * FROM tasks');
+    // * return res.rows;
+
+    // Pool Connection
+    const query = 'SELECT * FROM tasks';
+    const res = await this.pool.query(query);
     return res.rows;
-    // return this.users;
+
+    // --- Local results generated in constructor
+    // * return this.users;
   }
 
   async findOne(id) {
