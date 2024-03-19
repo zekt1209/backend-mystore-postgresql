@@ -46,7 +46,12 @@ class UsersService {
       role
     };
 
-    this.users.push(newUser);
+    // --- Local insertion to array generated in constructor
+    // this.users.push(newUser);
+
+    const query = `INSERT INTO users (id, name, email, role) VALUES ('${newUser.id}', '${newUser.name}', '${newUser.email}', '${newUser.role}')`;
+    const res = await this.pool.query(query);
+
     return newUser;
 
   }
@@ -58,7 +63,7 @@ class UsersService {
     // * return res.rows;
 
     // Pool Connection
-    const query = 'SELECT * FROM tasks';
+    const query = 'SELECT * FROM users';
     const res = await this.pool.query(query);
     return res.rows;
 
@@ -67,7 +72,10 @@ class UsersService {
   }
 
   async findOne(id) {
-    return this.users.find(user => user.id == id);
+    const query = `SELECT * FROM users WHERE id = '${id}'`;
+    const res = await this.pool.query(query);
+    return res.rows;
+    // return this.users.find(user => user.id == id);
   }
 
   async update(id, changes) {

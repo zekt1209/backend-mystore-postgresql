@@ -42,6 +42,8 @@ router.get("/:id",
     if (!user) {
       res.status(404).json({message: `El usuario con id ${id} no existe`});
     } else {
+      console.log(id);
+      console.log('typeOf: ' + typeof(id));
       res.json(user);
     }
 
