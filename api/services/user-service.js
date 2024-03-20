@@ -50,7 +50,7 @@ class UsersService {
     // this.users.push(newUser);
 
     const query = `INSERT INTO users (id, name, email, role) VALUES ('${newUser.id}', '${newUser.name}', '${newUser.email}', '${newUser.role}')`;
-    const res = await this.pool.query(query);
+    await this.pool.query(query);
 
     return newUser;
 
@@ -79,7 +79,8 @@ class UsersService {
   }
 
   async update(id, changes) {
-    const index = this.users.findIndex(user => user.id == id)
+    // --- Local Update made on the static array
+/*     const index = this.users.findIndex(user => user.id == id)
 
     if (index === -1) {
       throw new Error('User not found')
@@ -92,19 +93,44 @@ class UsersService {
       ...changes
     }
 
-    return this.users[index];
+    return this.users[index]; */
+
+    const datasUpdate = [];
+    const setQuery = [];
+
+    // -> [ [ '0', 'a' ], [ '1', 'b' ], [ '2', 'c' ] ]
+    Object.entries(changes).forEach((entrie, index) => {
+      setQuery.push(entrie[0] + ` = $${index + 1}`);
+      datasUpdate.push(entrie[1]);
+    });
+
+    // const query = `UPDATE users SET column1 = value1, column2 = value2, ... WHERE id = ${id};`
+    const query = `UPDATE users SET ${setQuery.join(", ")} WHERE id = '${id}';`;
+
+    await this.pool.query(query, datasUpdate)
+
+    return {
+      id,
+      ...changes,
+    };
 
   }
 
   async delete(id) {
-    const index = this.users.findIndex(user => user.id == id)
+    // --- Local deletion on static array
+/*     const index = this.users.findIndex(user => user.id == id)
 
     if (index === -1) {
       throw new Error('User not found')
     }
 
     this.users.splice(index, 1);
-    return id;
+    return id; */
+
+    const query = `DELETE FROM USERS WHERE id = '${id}'`;
+    await this.pool.query(query);
+    return { id };
+
   }
 
 }
