@@ -1,12 +1,16 @@
 const { faker } = require('@faker-js/faker');
 const boom = require('@hapi/boom');
 
+const getPoolConnection = require('../libs/postgresql-pool');
+
 // CRUD para la entidad Producto desde la logica de negocio
 class ProductsService {
 
   constructor() {
     this.products = [];
     this.generate();
+    this.pool = getPoolConnection;
+    this.pool.on('error', (err) => console.error(err));
   }
 
   generate() {
@@ -39,13 +43,18 @@ class ProductsService {
 
   }
 
-  find() {
-
-    return new Promise((resolve, reject) => {
+  async find() {
+    // --- Local results generated in constructor
+/*     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve(this.products)
       }, 3000);
-    });
+    }); */
+
+    // Pool Connection
+    const query = 'SELECT * FROM tasks';
+    const res = await this.pool.query(query);
+    return res.rows;
 
   }
 
