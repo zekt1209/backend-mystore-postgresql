@@ -58,7 +58,7 @@ class UsersService {
     // * return res.rows;
 
     // Pool Connection
-    const query = 'SELECT * FROM tasks';
+    const query = 'SELECT * FROM users';
     const res = await this.pool.query(query);
     return res.rows;
 
