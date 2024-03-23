@@ -1,0 +1,13 @@
+-- CREATE TABLE purchase_orders (id varchar(6), name varchar(120), total float);
+
+-- SELECT * FROM categories;
+-- INSERT INTO categories (name) VALUES ('Juguetes');
+-- SELECT * FROM categories WHERE id = 'asdf';
+-- UPDATE categories SET id = 'asdf' WHERE name = 'Juguetes';
+
+-- purchase_orders
+-- CREATE TABLE purchase_orders (id varchar(6), name varchar(120), total float);
+-- INSERT INTO purchase_orders (id, name, total) VALUES ('asdf', 'Purchase Order #1', 152.40);
+-- SELECT * FROM categories WHERE id = 'asdf';
+-- UPDATE categories SET id = 'asdf' WHERE name = 'Juguetes';
+-- SELECT * FROM purchase_orders;
