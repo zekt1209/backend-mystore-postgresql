@@ -2,6 +2,7 @@ const { faker } = require('@faker-js/faker');
 const boom = require('@hapi/boom');
 
 const getPoolConnection = require('../libs/postgresql-pool');
+const table = 'products';
 
 // CRUD para la entidad Producto desde la logica de negocio
 class ProductsService {
@@ -38,7 +39,13 @@ class ProductsService {
       image,
     }
 
-    this.products.push(newProduct);
+    // --- Local insertion to array generated in constructor
+    // this.products.push(newProduct);
+
+    const query = `INSERT INTO ${table} (id, name, price, image) VALUES ('${newProduct.id}', '${newProduct.name}', '${newProduct.price}', '${newProduct.image}')`;
+    console.log(query);
+    await this.pool.query(query);
+
     return newProduct;
 
   }
@@ -52,14 +59,14 @@ class ProductsService {
     }); */
 
     // Pool Connection
-    const query = 'SELECT * FROM tasks';
+    const query = `SELECT * FROM ${table}`;
     const res = await this.pool.query(query);
     return res.rows;
 
   }
 
   async findOne(id) {
-    const product = this.products.find(product => product.id === id);
+/*     const product = this.products.find(product => product.id === id);
 
     if (!product) {
       throw boom.notFound('product not found');
@@ -69,12 +76,16 @@ class ProductsService {
       throw boom.conflict('product is blocked');
     }
 
-    return product;
+    return product; */
+
+    const query = `SELECT * FROM ${table} WHERE id = '${id}'`;
+    const res = await this.pool.query(query);
+    return res.rows;
   }
 
   async update(id, changes) {
-
-    const index = this.products.findIndex(product => product.id === id);
+    // --- Local Update made on the static array
+/*     const index = this.products.findIndex(product => product.id === id);
 
     if (index === -1) {
       // throw new Error('Product not found')
@@ -88,19 +99,42 @@ class ProductsService {
       ...changes
      };
 
-    return this.products[index];
+    return this.products[index]; */
+
+    const datasUpdate = [];
+    const setQuery = [];
+
+    // -> [ [ '0', 'a' ], [ '1', 'b' ], [ '2', 'c' ] ]
+    Object.entries(changes).forEach((entrie, index) => {
+      setQuery.push(entrie[0] + ` = $${index + 1}`);
+      datasUpdate.push(entrie[1]);
+    });
+
+    // const query = `UPDATE users SET column1 = value1, column2 = value2, ... WHERE id = ${id};`
+    const query = `UPDATE ${table} SET ${setQuery.join(", ")} WHERE id = '${id}';`;
+
+    await this.pool.query(query, datasUpdate)
+
+    return {
+      id,
+      ...changes,
+    };
 
   }
 
   async delete(id) {
 
-    const index = this.products.findIndex(product => product.id === id);
+/*     const index = this.products.findIndex(product => product.id === id);
 
     if (index === -1) {
       throw boom.notFound('product not found');
     }
 
     this.products.splice(index, 1);
+    return { id }; */
+
+    const query = `DELETE FROM ${table} WHERE id = '${id}'`;
+    await this.pool.query(query);
     return { id };
 
   }
