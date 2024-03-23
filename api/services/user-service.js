@@ -3,6 +3,7 @@ const { faker } = require('@faker-js/faker');
 // Conexion con la DB
 const getConnection = require('../libs/postgresql');
 const getPoolConnection = require('../libs/postgresql-pool');
+const table = 'users';
 
 class UsersService {
 
@@ -49,7 +50,7 @@ class UsersService {
     // --- Local insertion to array generated in constructor
     // this.users.push(newUser);
 
-    const query = `INSERT INTO users (id, name, email, role) VALUES ('${newUser.id}', '${newUser.name}', '${newUser.email}', '${newUser.role}')`;
+    const query = `INSERT INTO ${table} (id, name, email, role) VALUES ('${newUser.id}', '${newUser.name}', '${newUser.email}', '${newUser.role}')`;
     await this.pool.query(query);
 
     return newUser;
@@ -63,7 +64,7 @@ class UsersService {
     // * return res.rows;
 
     // Pool Connection
-    const query = 'SELECT * FROM users';
+    const query = `SELECT * FROM ${table}`;
     const res = await this.pool.query(query);
     return res.rows;
 
@@ -72,7 +73,7 @@ class UsersService {
   }
 
   async findOne(id) {
-    const query = `SELECT * FROM users WHERE id = '${id}'`;
+    const query = `SELECT * FROM ${table} WHERE id = '${id}'`;
     const res = await this.pool.query(query);
     return res.rows;
     // return this.users.find(user => user.id == id);
@@ -105,7 +106,7 @@ class UsersService {
     });
 
     // const query = `UPDATE users SET column1 = value1, column2 = value2, ... WHERE id = ${id};`
-    const query = `UPDATE users SET ${setQuery.join(", ")} WHERE id = '${id}';`;
+    const query = `UPDATE ${table} SET ${setQuery.join(", ")} WHERE id = '${id}';`;
 
     await this.pool.query(query, datasUpdate)
 
@@ -127,7 +128,7 @@ class UsersService {
     this.users.splice(index, 1);
     return id; */
 
-    const query = `DELETE FROM USERS WHERE id = '${id}'`;
+    const query = `DELETE FROM ${table} WHERE id = '${id}'`;
     await this.pool.query(query);
     return { id };
 
