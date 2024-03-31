@@ -43,19 +43,20 @@ class UsersService {
 
   async create(data) {
 
-    const { name, email, role } = data;
+    const { name, email, password, role } = data;
 
     const newUser = {
       id: faker.string.nanoid(4),
       name,
       email,
+      password,
       role
     };
 
     // --- Local insertion to array generated in constructor
     // this.users.push(newUser);
 
-    const query = `INSERT INTO ${table} (id, name, email, role) VALUES ('${newUser.id}', '${newUser.name}', '${newUser.email}', '${newUser.role}')`;
+    const query = `INSERT INTO ${table} (id, name, email, password, role) VALUES ('${newUser.id}', '${newUser.name}', '${newUser.email}', '${newUser.role}')`;
     await this.pool.query(query);
 
     return newUser;

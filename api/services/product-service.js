@@ -3,7 +3,11 @@ const boom = require('@hapi/boom');
 
 const getPoolConnection = require('../libs/postgresql-pool');
 const sequilize = require('../libs/sequilize');
+const { models } = require('./../libs/sequilize');
+
 const table = 'products';
+
+
 
 // CRUD para la entidad Producto desde la logica de negocio
 class ProductsService {
@@ -60,9 +64,13 @@ class ProductsService {
     }); */
 
     // Pool Connection
-    const query = `SELECT * FROM ${table}`;
+/*     const query = `SELECT * FROM ${table}`;
     const [data, metabase] = await sequilize.query(query);
-    return data;
+    return data; */
+
+    // Sequelize connection
+    const rta = await models.Product.findAll();
+    return rta;
 
   }
 

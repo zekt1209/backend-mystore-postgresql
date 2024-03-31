@@ -1,8 +1,8 @@
 const {Model, DataTypes, Sequelize} = require('sequelize');
 
-const USER_TABLE = 'users';
+const PRODUCT_TABLE = 'products';
 
-const UserSchema = {
+const ProductSchema = {
   id: {
     allowNull: false,
     // autoIncrement: true,
@@ -13,16 +13,12 @@ const UserSchema = {
     allowNull: false,
     type: DataTypes.STRING
   },
-  email: {
+  price: {
     allowNull: false,
-    type: DataTypes.STRING,
-    unique: true
+    type: DataTypes.INTEGER
   },
-  password: {
-    // allowNull: false,
-    type: DataTypes.STRING
-  },
-  role: {
+  image: {
+    allowNull: false,
     type: DataTypes.STRING
   },
   createdAt: {
@@ -41,7 +37,7 @@ const UserSchema = {
 
 // la clase Model, tiene todos los metodos con los que podremos hacer los queries.
 
-class User extends Model {
+class Product extends Model {
   // Aqui definiremos todas las relaciones (Proximamente ...)
   static associate() {
     // associate
@@ -51,11 +47,11 @@ class User extends Model {
   static config(sequelize) {
     return {
       sequelize,
-      tableName: USER_TABLE,
-      modelName: 'User',
+      tableName: PRODUCT_TABLE,
+      modelName: 'Product',
       timeStamps: false
     }
   }
 }
 
-module.exports = { USER_TABLE, UserSchema, User };
+module.exports = { PRODUCT_TABLE, ProductSchema, Product };
