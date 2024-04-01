@@ -11,3 +11,11 @@ console.log(Object.getOwnPropertyNames(obj)); // [ ['0', 'a'], ['1', 'b'], ['2',
 Object.entries(obj).forEach((entrie, index) => {
 
 });
+
+const date = new Date();
+console.log(date);
+
+let formatter = new Intl.DateTimeFormat('es-MX', {timeZone: 'America/Mexico_City'});
+
+const mxDate = date.toLocaleString('es-MX', {timeZone: 'America/Mexico_City'})
+console.log(mxDate.replace(',', ''));

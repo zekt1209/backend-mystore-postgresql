@@ -4,19 +4,23 @@ const Joi = require('joi');
 const id = Joi.string().min(4);
 const name = Joi.string().min(3).max(20);
 const email = Joi.string().email();
-const role = Joi.string();
+const password = Joi.string();
+// const role = Joi.string();
 
 // Required or Optional
 const createUserSchema = Joi.object({
   name: name.required(),
   email: email.required(),
-  role: role.required(),
+  password: password.required(),
+  // De momento se queda comentado al implementar logica de ORM
+  // role: role.required(),
 });
 
 const updateUserSchema = Joi.object({
   name: name,
   email: email,
-  role: role,
+  password: password,
+  // role: role,
 });
 
 const getUserSchema = Joi.object({

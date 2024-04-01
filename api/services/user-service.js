@@ -1,4 +1,5 @@
 const { faker } = require('@faker-js/faker');
+const boom = require('@hapi/boom');
 
 // Conexion con la DB
 const getConnection = require('../libs/postgresql');
@@ -50,16 +51,20 @@ class UsersService {
       name,
       email,
       password,
-      role
+      updated_at: new Date(), // Hora fomrateada a horario de mexico
+      // role
     };
 
     // --- Local insertion to array generated in constructor
     // this.users.push(newUser);
 
-    const query = `INSERT INTO ${table} (id, name, email, password, role) VALUES ('${newUser.id}', '${newUser.name}', '${newUser.email}', '${newUser.role}')`;
-    await this.pool.query(query);
+    // --- Pool Connection
+/*     const query = `INSERT INTO ${table} (id, name, email, password, role) VALUES ('${newUser.id}', '${newUser.name}', '${newUser.email}', '${newUser.role}')`;
+    await this.pool.query(query); */
 
-    return newUser;
+    // --- Sequelize Connection
+    const userCreated = await models.User.create(newUser);
+    return userCreated;
 
   }
 
@@ -83,10 +88,20 @@ class UsersService {
   }
 
   async findOne(id) {
-    const query = `SELECT * FROM ${table} WHERE id = '${id}'`;
-    const res = await this.pool.query(query);
-    return res.rows;
+    // --- Local Update made on the static array
     // return this.users.find(user => user.id == id);
+
+    // --- Pool Connection
+/*     const query = `SELECT * FROM ${table} WHERE id = '${id}'`;
+    const res = await this.pool.query(query);
+    return res.rows; */
+
+    // --- Sequelize Connection
+    const user = await models.User.findByPk(id);
+    if (!user) {
+      throw boom.notFound('User not found.');
+    }
+    return user;
   }
 
   async update(id, changes) {
@@ -106,7 +121,8 @@ class UsersService {
 
     return this.users[index]; */
 
-    const datasUpdate = [];
+    // --- Pool Connection
+/*     const datasUpdate = [];
     const setQuery = [];
 
     // -> [ [ '0', 'a' ], [ '1', 'b' ], [ '2', 'c' ] ]
@@ -119,6 +135,27 @@ class UsersService {
     const query = `UPDATE ${table} SET ${setQuery.join(", ")} WHERE id = '${id}';`;
 
     await this.pool.query(query, datasUpdate)
+
+    return {
+      id,
+      ...changes,
+    }; */
+
+    // --- Sequelize Connection
+    const user = await this.findOne(id);
+
+    // Si el usuario fue encontrado, then
+    const datasUpdate = [];
+    const setQuery = [];
+
+    // -> [ [ '0', 'a' ], [ '1', 'b' ], [ '2', 'c' ] ]
+    Object.entries(changes).forEach((entrie, index) => {
+      setQuery.push(entrie[0] + ` = $${index + 1}`);
+      datasUpdate.push(entrie[1]);
+    });
+
+    // Query
+    await user.update(changes);
 
     return {
       id,
@@ -138,8 +175,14 @@ class UsersService {
     this.users.splice(index, 1);
     return id; */
 
-    const query = `DELETE FROM ${table} WHERE id = '${id}'`;
+    // -- Pool Connection
+/*     const query = `DELETE FROM ${table} WHERE id = '${id}'`;
     await this.pool.query(query);
+    return { id }; */
+
+    // --- Sequelize Connection
+    const user = await this.findOne(id);
+    await user.destroy();
     return { id };
 
   }
