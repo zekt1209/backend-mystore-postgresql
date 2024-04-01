@@ -1,6 +1,10 @@
 const { faker } = require('@faker-js/faker');
 const getPoolConnection = require('../libs/postgresql-pool');
 
+// Cuando se ejecuta el metodo estatico 'init' en el index del modelo de la DB
+// Guarda la forma en la que podemos acceder a todos los modelos, ya que en el archivo que creamos para cada servicio dentro de db/models definimos un modelName en la config que estamos exportando
+const { models } = require('./../libs/sequilize');
+
 const table = 'purchase_orders';
 
 class OrdersService {
@@ -28,9 +32,13 @@ class OrdersService {
     // return this.purchaseOrders;
 
     // Pool Connection
-    const query = `SELECT * FROM ${table}`;
+/*     const query = `SELECT * FROM ${table}`;
     const res = await this.pool.query(query);
-    return res.rows;
+    return res.rows; */
+
+    // Sequelize Connection
+    const rta = models.Order.findAll();
+    return rta;
 
   }
 
