@@ -1,5 +1,20 @@
+const { ValidationErrorItem } = require("sequelize");
+const { User } = require("../db/models/user.model");
+
 function logErrors(err, req, res, next) {
   console.error(err);
+  next(err);
+}
+
+// Sequelize middleware for error handler
+function ormErrorHandler (err, req, res, next) {
+  if (err instanceof ValidationError) {
+    res.status(409).json({
+      statusCode: 409,
+      message: err.name,
+      errors: err.errors
+    });
+  }
   next(err);
 }
 
@@ -21,8 +36,10 @@ function boomErrorHandler(err, req, res, next) {
   }
 };
 
+
 module.exports = {
   logErrors,
+  ormErrorHandler,
   errorHandler,
   boomErrorHandler,
 }

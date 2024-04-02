@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 // Middlewares de error
-const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error-handler');
+const { logErrors, ormErrorHandler, errorHandler, boomErrorHandler } = require('./middlewares/error-handler');
 
 const routerApi = require('./routes/index');
 app.use(express.json());
@@ -51,6 +51,7 @@ routerApi(app);
 
 // Llamando a los middlewares
 app.use(logErrors);
+app.use(ormErrorHandler);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
