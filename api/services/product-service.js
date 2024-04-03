@@ -42,16 +42,22 @@ class ProductsService {
       name,
       price,
       image,
+      updated_at: new Date(), // Hora fomrateada a horario de mexico
     }
 
     // --- Local insertion to array generated in constructor
     // this.products.push(newProduct);
 
-    const query = `INSERT INTO ${table} (id, name, price, image) VALUES ('${newProduct.id}', '${newProduct.name}', '${newProduct.price}', '${newProduct.image}')`;
+    // --- Pool Connection
+/*     const query = `INSERT INTO ${table} (id, name, price, image) VALUES ('${newProduct.id}', '${newProduct.name}', '${newProduct.price}', '${newProduct.image}')`;
     console.log(query);
     await this.pool.query(query);
 
-    return newProduct;
+    return newProduct; */
+
+    // --- Sequelize Connection
+    const productCreated = await models.Product.create(newProduct);
+    return productCreated;
 
   }
 
@@ -87,9 +93,17 @@ class ProductsService {
 
     return product; */
 
-    const query = `SELECT * FROM ${table} WHERE id = '${id}'`;
+    // --- Pool Connection
+/*     const query = `SELECT * FROM ${table} WHERE id = '${id}'`;
     const res = await this.pool.query(query);
-    return res.rows;
+    return res.rows; */
+
+    // --- Sequelize Connection
+    const product = await models.Product.findByPk(id);
+    if (!product) {
+      throw boom.notFound('Product not found.');
+    }
+    return product;
   }
 
   async update(id, changes) {
@@ -110,7 +124,8 @@ class ProductsService {
 
     return this.products[index]; */
 
-    const datasUpdate = [];
+    // --- Pool Connection
+/*     const datasUpdate = [];
     const setQuery = [];
 
     // -> [ [ '0', 'a' ], [ '1', 'b' ], [ '2', 'c' ] ]
@@ -123,6 +138,27 @@ class ProductsService {
     const query = `UPDATE ${table} SET ${setQuery.join(", ")} WHERE id = '${id}';`;
 
     await this.pool.query(query, datasUpdate)
+
+    return {
+      id,
+      ...changes,
+    }; */
+
+    // --- Sequelize Connection
+    const product = await this.findOne(id);
+
+    // Si el producto fue encontrado, then
+    const datasUpdate = [];
+    const setQuery = [];
+
+    // -> [ [ '0', 'a' ], [ '1', 'b' ], [ '2', 'c' ] ]
+    Object.entries(changes).forEach((entrie, index) => {
+      setQuery.push(entrie[0] + ` = $${index + 1}`);
+      datasUpdate.push(entrie[1]);
+    });
+
+    // Query
+    await product.update(changes);
 
     return {
       id,
@@ -142,8 +178,14 @@ class ProductsService {
     this.products.splice(index, 1);
     return { id }; */
 
-    const query = `DELETE FROM ${table} WHERE id = '${id}'`;
+    // -- Pool Connection
+/*     const query = `DELETE FROM ${table} WHERE id = '${id}'`;
     await this.pool.query(query);
+    return { id }; */
+
+    // --- Sequelize Connection
+    const product = await this.findOne(id);
+    await product.destroy();
     return { id };
 
   }

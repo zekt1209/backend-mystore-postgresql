@@ -1,4 +1,5 @@
 const { faker } = require('@faker-js/faker');
+const boom = require('@hapi/boom');
 
 const getPoolConnection = require('../libs/postgresql-pool');
 
@@ -36,15 +37,21 @@ class CategoriesService {
     const newCategory = {
       id: faker.string.nanoid(4),
       name,
+      updated_at: new Date(), // Hora fomrateada a horario de mexico
     }
 
     // --- Local results generated in constructor
     // this.categories.push(newCategory);
 
-    const query = `INSERT INTO categories (id, name) VALUES ('${newCategory.id}', '${newCategory.name}');`;
+    // --- Pool Connection
+/*     const query = `INSERT INTO categories (id, name) VALUES ('${newCategory.id}', '${newCategory.name}');`;
     await this.pool.query(query);
 
-    return newCategory;
+    return newCategory; */
+
+    // --- Sequelize Connection
+    const categoryCreated = await models.Category.create(newCategory);
+    return categoryCreated;
 
   }
 
@@ -66,9 +73,18 @@ class CategoriesService {
     // --- Local results generated in constructor
     // return this.categories.find(category => category.id == id);
 
-    const query = `SELECT * FROM ${table} WHERE id = '${id}';`;
+    // --- Pool Connection
+/*     const query = `SELECT * FROM ${table} WHERE id = '${id}';`;
     const res = await this.pool.query(query);
-    return res.rows;
+    return res.rows; */
+
+    // --- Sequelize Connection
+    const category = await models.Category.findByPk(id);
+    if (!category) {
+      throw boom.notFound('Category not found.');
+    }
+    return category;
+
   }
 
   async update(id, changes) {
@@ -89,7 +105,8 @@ class CategoriesService {
 
     return this.categories[index]; */
 
-    const datasUpdate = [];
+    // --- Pool Connection
+/*     const datasUpdate = [];
     const setQuery = [];
 
     // -> [ [ '0', 'a' ], [ '1', 'b' ], [ '2', 'c' ] ]
@@ -102,6 +119,27 @@ class CategoriesService {
     const query = `UPDATE ${table} SET ${setQuery.join(", ")} WHERE id = '${id}';`;
 
     await this.pool.query(query, datasUpdate)
+
+    return {
+      id,
+      ...changes,
+    }; */
+
+    // --- Sequelize Connection
+    const category = await this.findOne(id);
+
+    // Si el category fue encontrado, then
+    const datasUpdate = [];
+    const setQuery = [];
+
+    // -> [ [ '0', 'a' ], [ '1', 'b' ], [ '2', 'c' ] ]
+    Object.entries(changes).forEach((entrie, index) => {
+      setQuery.push(entrie[0] + ` = $${index + 1}`);
+      datasUpdate.push(entrie[1]);
+    });
+
+    // Query
+    await category.update(changes);
 
     return {
       id,
@@ -121,8 +159,14 @@ class CategoriesService {
     this.categories.splice(index, 1);
     return id; */
 
-    const query = `DELETE FROM ${table} WHERE id = '${id}'`;
+    // --- Pool Connection
+/*     const query = `DELETE FROM ${table} WHERE id = '${id}'`;
     await this.pool.query(query);
+    return { id }; */
+
+    // --- Sequelize Connection
+    const category = await this.findOne(id);
+    await category.destroy();
     return { id };
 
   }

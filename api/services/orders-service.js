@@ -1,4 +1,6 @@
 const { faker } = require('@faker-js/faker');
+const boom = require('@hapi/boom');
+
 const getPoolConnection = require('../libs/postgresql-pool');
 
 // Cuando se ejecuta el metodo estatico 'init' en el index del modelo de la DB
@@ -95,10 +97,14 @@ class OrdersService {
     // --- Local insertion to array generated in constructor
     // this.purchaseOrders.push(newOrder);
 
-    const query = `INSERT INTO ${table} (id, name, total) VALUES ('${newOrder.id}', '${newOrder.name}', ${newOrder.total});`;
+    // -- Pool Connection
+/*     const query = `INSERT INTO ${table} (id, name, total) VALUES ('${newOrder.id}', '${newOrder.name}', ${newOrder.total});`;
     await this.pool.query(query);
+    return newOrder; */
 
-    return newOrder;
+    // --- Sequelize Connection
+    const orderCreated = await models.Order.create(newOrder);
+    return orderCreated;
 
   }
 
@@ -107,10 +113,17 @@ class OrdersService {
     // --- Local results generated in constructor
     // return this.purchaseOrders.find(order => order.id == id);
 
-    // Pool Connection
-    const query = `SELECT * FROM ${table} WHERE id = '${id}'`;
+    // --- Pool Connection
+/*     const query = `SELECT * FROM ${table} WHERE id = '${id}'`;
     const res = await this.pool.query(query);
-    return res.rows;
+    return res.rows; */
+
+    // --- Sequelize Connection
+    const order = await models.Order.findByPk(id);
+    if (!order) {
+      throw boom.notFound('Order not found.');
+    }
+    return order;
 
   }
 
@@ -131,8 +144,8 @@ class OrdersService {
 
     return this.purchaseOrders[index]; */
 
-    // Pool Connection
-    const datasUpdate = [];
+    // --- Pool Connection
+/*     const datasUpdate = [];
     const setQuery = [];
 
     // -> [ [ '0', 'a' ], [ '1', 'b' ], [ '2', 'c' ] ]
@@ -145,6 +158,27 @@ class OrdersService {
     const query = `UPDATE ${table} SET ${setQuery.join(", ")} WHERE id = '${id}';`;
 
     await this.pool.query(query, datasUpdate)
+
+    return {
+      id,
+      ...changes,
+    }; */
+
+    // --- Sequelize Connection
+    const order = await this.findOne(id);
+
+    // Si la orden fue encontrada, then
+    const datasUpdate = [];
+    const setQuery = [];
+
+    // -> [ [ '0', 'a' ], [ '1', 'b' ], [ '2', 'c' ] ]
+    Object.entries(changes).forEach((entrie, index) => {
+      setQuery.push(entrie[0] + ` = $${index + 1}`);
+      datasUpdate.push(entrie[1]);
+    });
+
+    // Query
+    await order.update(changes);
 
     return {
       id,
@@ -165,9 +199,14 @@ class OrdersService {
     this.purchaseOrders.splice(index, 1);
     return id; */
 
-    // Pool Connection
-    const query = `DELETE FROM ${table} WHERE id = '${id}'`;
+    // --- Pool Connection
+/*     const query = `DELETE FROM ${table} WHERE id = '${id}'`;
     await this.pool.query(query);
+    return { id }; */
+
+    // --- Sequelize Connection
+    const order = await this.findOne(id);
+    await order.destroy();
     return { id };
 
   }

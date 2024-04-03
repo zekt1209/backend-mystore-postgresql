@@ -31,7 +31,7 @@ const ProductSchema = {
     // allowNull: false,
     type: DataTypes.DATE,
     field: 'updated_at',
-    defaultValue: Sequelize.DATE,
+    // defaultValue: Sequelize.DATE,
 },
 }
 
