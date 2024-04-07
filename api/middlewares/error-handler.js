@@ -1,4 +1,4 @@
-const { ValidationErrorItem } = require("sequelize");
+const { ValidationError } = require("sequelize");
 const { User } = require("../db/models/user.model");
 
 function logErrors(err, req, res, next) {
@@ -9,7 +9,6 @@ function logErrors(err, req, res, next) {
 // Sequelize middleware for error handler
 function ormErrorHandler (err, req, res, next) {
   if (err instanceof ValidationError) {
-    console.log(" *********************** ************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************");
     res.status(409).json({
       statusCode: 409,
       message: err.name,

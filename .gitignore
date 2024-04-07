@@ -130,3 +130,4 @@ dist
 .pnp.*
 
 postgres_data
+mysql_data
