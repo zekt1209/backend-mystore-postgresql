@@ -17,6 +17,8 @@ const sequelize = new Sequelize(URI, {
 setupModels(sequelize);
 
 // Hacemos sincronizacion para que tome esos modelo y haga la estructura
-sequelize.sync({alter: true});
+// *** UPDATE: Lo comentamos, ya que los cambios los iremos trackeando por medio de MIGRACIONES
+
+// sequelize.sync({alter: true});
 
 module.exports = sequelize;
