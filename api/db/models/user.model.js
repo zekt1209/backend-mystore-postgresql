@@ -23,7 +23,9 @@ const UserSchema = {
     type: DataTypes.STRING
   },
   role: {
-    type: DataTypes.STRING
+    allowNull: false,
+    type: DataTypes.STRING,
+    defaultValue: 'snc_external'
   },
   createdAt: {
     // allowNull: false,

@@ -52,7 +52,7 @@ class UsersService {
       email,
       password,
       updated_at: new Date(), // Hora fomrateada a horario de mexico
-      // role
+      role
     };
 
     // --- Local insertion to array generated in constructor
