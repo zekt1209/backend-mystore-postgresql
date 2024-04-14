@@ -5,6 +5,7 @@ const id = Joi.string().min(4);
 const name = Joi.string().min(3).max(20);
 const lastName = Joi.string().min(3).max(20);
 const phone = Joi.string();
+const userId = Joi.string();
 
 // Required or Optional
 
@@ -13,6 +14,7 @@ const createCustomerSchema = Joi.object({
   name: name.required(),
   lastName: lastName.required(),
   phone: phone.required(),
+  userId: userId.required(),
 
 });
 
@@ -21,6 +23,7 @@ const updateCustomerSchema = Joi.object({
   name: name,
   lastName: lastName,
   phone: phone,
+  userId: userId,
 
 });
 

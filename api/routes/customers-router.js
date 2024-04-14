@@ -11,7 +11,6 @@ const validatorHandler = require('../middlewares/validator-handler');
 
 // Schemas for DTO Validators
 const { createCustomerSchema, updateCustomerSchema, getCustomerSchema, deleteCustomerSchema } = require('../schemas/customer-schema');
-const { getUserSchema } = require('../schemas/user-schema');
 
 // Endpoints de Customers
 router.get('/', async (req, res) => {
@@ -64,7 +63,8 @@ router.post('/',
       });
 
     } catch (err) {
-      res.status(404).json({message: `CustomMessage in router: request failed on function: POST`});
+      res.status(404).json({message: `CustomMessage in router: request failed on function: POST`,
+    error: err});
     }
 
 

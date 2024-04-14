@@ -1,4 +1,5 @@
 const { Model, DataTypes, Sequelize } = require('sequelize');
+const { USER_TABLE } = require('./user.model');
 
 const CUSTOMER_TABLE = 'customers';
 
@@ -21,6 +22,18 @@ const CustomerSchema = {
     allowNull: false,
     type: DataTypes.STRING
   },
+  userId: {
+    field: 'user_id',
+    allowNull: true,
+    type: DataTypes.STRING,
+    references: {
+      model: USER_TABLE,
+      key: 'id'
+    },
+    // Que sucede cuando se actualiza el registro en 'user' con este ID? :
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+  },
   createdAt: {
     // allowNull: false,
     type: DataTypes.DATE,
@@ -41,8 +54,9 @@ const CustomerSchema = {
 class Customer extends Model {
 
   // Aqui definiremos todas las relaciones (Proximamente ...)
-  static associate() {
+  static associate(models) {
     // associate
+    this.belongsTo(models.User, {as: 'user'});
   }
 
   // Aqui vamos a recibir una conexion y retornar una configuracion

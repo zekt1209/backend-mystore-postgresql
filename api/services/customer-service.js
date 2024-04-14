@@ -13,13 +13,14 @@ class CustomerService {
 
   async create(data) {
 
-    const {name, lastName, phone} = data;
+    const {name, lastName, phone, userId} = data;
 
     const newCustomer = {
       id: faker.string.nanoid(4),
       name,
       lastName,
-      phone
+      phone,
+      userId,
     }
 
     const customerCreated = await models.Customer.create(newCustomer);
