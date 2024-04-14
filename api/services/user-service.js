@@ -80,7 +80,9 @@ class UsersService {
        return res.rows; */
 
        // Sequellize connection
-       const rta = await models.User.findAll();
+       const rta = await models.User.findAll({
+        include: ['customer'],
+       });
        return rta;
 
     // --- Local results generated in constructor

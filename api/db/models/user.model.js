@@ -47,8 +47,12 @@ const UserSchema = {
 
 class User extends Model {
   // Aqui definiremos todas las relaciones (Proximamente ...)
-  static associate() {
+  static associate(models) {
     // associate
+    this.hasOne(models.Customer, {
+      as: 'customer',
+      foreignKey: 'userId'
+    });
   }
 
   // Aqui vamos a recibir una conexion y retornar una configuracion
