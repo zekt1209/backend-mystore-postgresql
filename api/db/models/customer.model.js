@@ -1,12 +1,10 @@
-const {Model, DataTypes, Sequelize} = require('sequelize');
+const { Model, DataTypes, Sequelize } = require('sequelize');
 
-const USER_TABLE = 'users';
+const CUSTOMER_TABLE = 'customers';
 
-const UserSchema = {
-
+const CustomerSchema = {
   id: {
     allowNull: false,
-    // autoIncrement: true,
     primaryKey: true,
     type: DataTypes.STRING
   },
@@ -14,19 +12,14 @@ const UserSchema = {
     allowNull: false,
     type: DataTypes.STRING
   },
-  email: {
+  lastName: {
     allowNull: false,
-    type: DataTypes.STRING,
-    unique: true
-  },
-  password: {
-    // allowNull: false,
+    field: 'last_name',
     type: DataTypes.STRING
   },
-  role: {
+  phone: {
     allowNull: false,
-    type: DataTypes.STRING,
-    defaultValue: 'snc_external'
+    type: DataTypes.STRING
   },
   createdAt: {
     // allowNull: false,
@@ -38,14 +31,15 @@ const UserSchema = {
     // allowNull: false,
     type: DataTypes.DATE,
     field: 'updated_at',
-    // defaultValue: Sequelize.DATE,
-  },
+    defaultValue: Sequelize.NOW
+  }
 
 }
 
 // la clase Model, tiene todos los metodos con los que podremos hacer los queries.
 
-class User extends Model {
+class Customer extends Model {
+
   // Aqui definiremos todas las relaciones (Proximamente ...)
   static associate() {
     // associate
@@ -53,13 +47,16 @@ class User extends Model {
 
   // Aqui vamos a recibir una conexion y retornar una configuracion
   static config(sequelize) {
+
     return {
       sequelize,
-      tableName: USER_TABLE,
-      modelName: 'User',
-      timeStamps: false
+      tableName: CUSTOMER_TABLE,
+      modelName: 'Customer',
+      timeStamp: false
     }
+
   }
+
 }
 
-module.exports = { USER_TABLE, UserSchema, User };
+module.exports = { CUSTOMER_TABLE, CustomerSchema, Customer };

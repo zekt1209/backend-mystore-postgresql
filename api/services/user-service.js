@@ -99,7 +99,7 @@ class UsersService {
     // --- Sequelize Connection
     const user = await models.User.findByPk(id);
     if (!user) {
-      throw boom.notFound('User not found.');
+      console.log(boom.notFound('User not found.'));
     }
     return user;
   }

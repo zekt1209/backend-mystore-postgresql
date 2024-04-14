@@ -6,6 +6,8 @@ const port = process.env.PORT || 3000;
 const { logErrors, ormErrorHandler, errorHandler, boomErrorHandler } = require('./middlewares/error-handler');
 
 const routerApi = require('./routes/index');
+
+// Evita problemas con peticiones POST o donde tengamos que enviar un body
 app.use(express.json());
 
 // --- Dar acceso a ciertos dominios que no sean de nuestro origen -----
