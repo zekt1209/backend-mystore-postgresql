@@ -23,6 +23,8 @@ function setupModels(sequelize) {
   // Asociaciones
   Customer.associate(sequelize.models);
   User.associate(sequelize.models);
+  Category.associate(sequelize.models);
+  Product.associate(sequelize.models);
 
 }
 

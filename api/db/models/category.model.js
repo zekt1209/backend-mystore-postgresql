@@ -29,8 +29,12 @@ const CategorySchema = {
 
 // la clase Model, tiene todos los metodos con los que podremos hacer los queries.
 class Category extends Model {
-  static associate() {
+  static associate(models) {
       // Aqui definiremos todas las relaciones (Proximamente ...)
+      this.hasMany(models.Product, {
+        as: 'products',
+        foreignKey: 'categoryId'
+      });
   }
 
   // Aqui vamos a recibir una conexion y retornar una configuracion

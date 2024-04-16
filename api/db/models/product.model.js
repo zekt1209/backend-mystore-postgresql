@@ -1,6 +1,7 @@
 const {Model, DataTypes, Sequelize} = require('sequelize');
 
 const PRODUCT_TABLE = 'products';
+const { CATEGORY_TABLE } = require('./category.model');
 
 const ProductSchema = {
   id: {
@@ -17,9 +18,25 @@ const ProductSchema = {
     allowNull: false,
     type: DataTypes.INTEGER
   },
+  description: {
+    allowNull: false,
+    type: DataTypes.TEXT
+  },
   image: {
     allowNull: false,
     type: DataTypes.STRING
+  },
+  categoryId: {
+    field: 'category_id',
+    allowNull: true,
+    type: DataTypes.STRING,
+    references: {
+      model: CATEGORY_TABLE,
+      key: 'id'
+    },
+    // Que sucede cuando se actualiza el registro en 'user' con este ID? :
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
   },
   createdAt: {
     // allowNull: false,
@@ -39,8 +56,9 @@ const ProductSchema = {
 
 class Product extends Model {
   // Aqui definiremos todas las relaciones (Proximamente ...)
-  static associate() {
+  static associate(models) {
     // associate
+    this.belongsTo(models.Category, { as: 'category' });
   }
 
   // Aqui vamos a recibir una conexion y retornar una configuracion
