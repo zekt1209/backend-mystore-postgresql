@@ -65,7 +65,7 @@ class CategoriesService {
     return res.rows; */
 
     // Sequelize Connection
-    const rta = models.Category.findAll();
+    const rta = models.Category.findAll({ include: ['products'] });
     return rta;
   }
 
@@ -79,7 +79,7 @@ class CategoriesService {
     return res.rows; */
 
     // --- Sequelize Connection
-    const category = await models.Category.findByPk(id);
+    const category = await models.Category.findByPk(id, { include: ['products'] });
     if (!category) {
       throw boom.notFound('Category not found.');
     }

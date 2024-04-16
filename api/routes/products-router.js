@@ -55,10 +55,18 @@ router.post('/',
   validatorHandler(createProductSchema, 'body'),
   async (req, res) => {
 
-    const body = req.body;
-    const newProduct = await service.create(body);
+    try {
 
-    res.status(201).json({ message: 'Created', data: newProduct })
+      const body = req.body;
+      const newProduct = await service.create(body);
+
+      res.status(201).json({ message: 'Created', data: newProduct })
+
+    } catch(err) {
+      res.status(500).json({
+        message: `CustomMessage in router: request failed on function: POST of products`,
+        error: err.message });
+    }
 
   }
 );

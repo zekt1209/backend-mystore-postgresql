@@ -35,14 +35,16 @@ class ProductsService {
 
   async create(data) {
 
-    const { name, price, image } = data;
+    const { name, price, description, image, categoryId } = data;
 
     const newProduct = {
       id: faker.string.nanoid(4),
       name,
       price,
+      description,
       image,
-      updated_at: new Date(), // Hora fomrateada a horario de mexico
+      categoryId
+      // updated_at: new Date(), // Hora fomrateada a horario de mexico
     }
 
     // --- Local insertion to array generated in constructor
@@ -75,7 +77,7 @@ class ProductsService {
     return data; */
 
     // Sequelize connection
-    const rta = await models.Product.findAll();
+    const rta = await models.Product.findAll( { include:['category'] } );
     return rta;
 
   }
@@ -99,7 +101,7 @@ class ProductsService {
     return res.rows; */
 
     // --- Sequelize Connection
-    const product = await models.Product.findByPk(id);
+    const product = await models.Product.findByPk(id, { include: ['category'] });
     if (!product) {
       throw boom.notFound('Product not found.');
     }

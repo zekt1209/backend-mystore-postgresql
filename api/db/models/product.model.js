@@ -28,7 +28,7 @@ const ProductSchema = {
   },
   categoryId: {
     field: 'category_id',
-    allowNull: true,
+    allowNull: false,
     type: DataTypes.STRING,
     references: {
       model: CATEGORY_TABLE,
@@ -58,7 +58,7 @@ class Product extends Model {
   // Aqui definiremos todas las relaciones (Proximamente ...)
   static associate(models) {
     // associate
-    this.belongsTo(models.Category, { as: 'category' });
+    this.belongsTo(models.Category, {/*  foreignKey: 'categoryId', */ as: 'category' });
   }
 
   // Aqui vamos a recibir una conexion y retornar una configuracion
