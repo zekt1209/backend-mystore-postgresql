@@ -30,7 +30,7 @@ class CustomerService {
 
   async find() {
     const rta = await models.Customer.findAll({
-      include: ['user']
+      include: ['user', 'orders']
     });
     return rta;
   }
@@ -46,7 +46,7 @@ class CustomerService {
 
   async update(id, changes) {
 
-    const customer = await this.findOne(id);
+    const customer = await this.findOne(id, {include: ['user', 'orders']});
     await customer.update(changes);
 
     return {

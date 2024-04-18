@@ -39,14 +39,22 @@ class OrdersService {
     return res.rows; */
 
     // Sequelize Connection
-    const rta = models.Order.findAll();
+    const rta = models.Order.findAll({
+      include:[
+        {
+          association: 'customer',
+          include: ['user']
+        }
+      ]
+    });
+
     return rta;
 
   }
 
   async create(data) {
     // Destructuracion de objetos
-    const { total } = data;
+    const { total, customerId } = data;
     let lastOrderNumber = 0;
 
     // if (this.purchaseOrders) {
@@ -92,6 +100,7 @@ class OrdersService {
       id: faker.string.nanoid(4),
       name: 'Orden: ' + (lastOrderNumber + 1),
       total,
+      customerId,
     }
 
     // --- Local insertion to array generated in constructor

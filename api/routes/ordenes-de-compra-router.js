@@ -16,27 +16,39 @@ const { getProductSchema } = require('../schemas/product-schema');
 // Endpoints Ordenes de compra
 router.get('/', async (req, res) => {
 
-  const purchaseOrders = await service.find();
-  res.json(purchaseOrders);
+  try {
+    const purchaseOrders = await service.find();
+    res.json(purchaseOrders);
+  } catch(err) {
+    res.status(404).json({message: `CustomMessage in router: request failed on function: GET`,
+    error: err});
+  }
+
 
 });
 
 router.get('/:id',
   validatorHandler(getOrderSchema, 'params'),
   async (req, res) => {
-    const { id } = req.params;
-    const purchaseOrder = await service.findOne(id);
+    try{
+      const { id } = req.params;
+      const purchaseOrder = await service.findOne(id);
 
-    if (!purchaseOrder) {
-      res.status(404).json({message: `La orden de compra con id ${id} no existe`});
-    } else {
-      res.json(purchaseOrder);
+      if (!purchaseOrder) {
+        res.status(404).json({message: `La orden de compra con id ${id} no existe`});
+      } else {
+        res.json(purchaseOrder);
+      }
+    } catch (err) {
+      res.status(404).json({message: `CustomMessage in router: request failed on function: GetById`,
+      error: err});
     }
 
   }
 );
 
 router.get('/:orderId/products', (req, res) => {
+
   const { orderId } = req.params;
   res.json(
       {
@@ -60,13 +72,19 @@ router.get('/:orderId/products', (req, res) => {
 router.post('/',
   validatorHandler(createOrderSchema, 'body'),
   async (req, res) => {
-    const body = req.body;
-    const newOrder = await service.create(body);
 
-    res.status(201).json({
-      message: 'purchase order CREATED',
-      data: newOrder,
-    });
+    try {
+      const body = req.body;
+      const newOrder = await service.create(body);
+
+      res.status(201).json({
+        message: 'purchase order CREATED',
+        data: newOrder,
+      });
+    } catch (err) {
+      res.status(404).json({message: `CustomMessage in orders router: request failed on function: POST`,
+      error: err});
+    }
   }
 );
 
