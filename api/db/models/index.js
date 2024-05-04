@@ -8,6 +8,7 @@ const { Product, ProductSchema } = require('./product.model');
 const { Category, CategorySchema } = require('./category.model');
 const { Order, OrderSchema } = require('./order.model');
 const { Customer, CustomerSchema } = require('./customer.model');
+const { OrdersProducts, OrdersProductsSchema } = require('./orders-products.model');
 
 const { config } = require('dotenv');
 
@@ -19,6 +20,7 @@ function setupModels(sequelize) {
   Category.init(CategorySchema, Category.config(sequelize));
   Order.init(OrderSchema, Order.config(sequelize));
   Customer.init(CustomerSchema, Customer.config(sequelize));
+  OrdersProducts.init(OrdersProductsSchema, OrdersProducts.config(sequelize));
 
   // Asociaciones
   Customer.associate(sequelize.models);

@@ -52,6 +52,13 @@ class Order extends Model {
   static associate(models) {
     // associate
     this.belongsTo(models.Customer, {as: 'customer'});
+    // Many to Many relationship
+    this.belongsToMany(models.Product, {
+      as: 'items',
+      through: models.OrdersProducts,
+      foreignKey: 'orderId',
+      otherKey: 'productId'
+    });
   }
 
   // Aqui vamos a recibir una conexion y retornar una configuracion
