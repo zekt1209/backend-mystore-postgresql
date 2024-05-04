@@ -7,6 +7,10 @@ const price = Joi.number().integer().min(10);
 const description = Joi.string();
 const image = Joi.string().uri();
 
+// queryParams attributes for PAGINACION purposes
+const limit = Joi.string();
+const offset = Joi.string();
+
 // Foreign Key - category_id
 const categoryId = Joi.string();
 
@@ -35,4 +39,9 @@ const deleteProductSchema = Joi.object({
   id: id.required(),
 });
 
-module.exports = { createProductSchema, updateProductSchema, getProductSchema, deleteProductSchema };
+const queryProductSchema = Joi.object({
+  limit,
+  offset
+});
+
+module.exports = { createProductSchema, updateProductSchema, getProductSchema, deleteProductSchema, queryProductSchema };

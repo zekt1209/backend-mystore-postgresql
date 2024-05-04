@@ -9,7 +9,7 @@ const service = new ProductsService();
 // Middleware Dinamico
 const validatorHandler = require('../middlewares/validator-handler');
 // Schemas for DTO Validators
-const { createProductSchema, updateProductSchema, getProductSchema, deleteProductSchema } = require('../schemas/product-schema');
+const { createProductSchema, updateProductSchema, getProductSchema, deleteProductSchema, queryProductSchema } = require('../schemas/product-schema');
 
 // Middleware example
 // router.use('/', (req, res, next) => {
@@ -18,9 +18,11 @@ const { createProductSchema, updateProductSchema, getProductSchema, deleteProduc
 // })
 
 // Endpoints de Products
-router.get('/', async (req, res) => {
+router.get('/',
+validatorHandler(queryProductSchema, 'params'),
+async (req, res) => {
 
-  const products = await service.find();
+  const products = await service.find(req.query);
   res.json(products);
 
 });

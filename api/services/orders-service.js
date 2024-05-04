@@ -118,6 +118,9 @@ class OrdersService {
 
   }
 
+  // Funcion de tabla orders-products para agregar productos a la orden
+  // PENDIENTE:
+  // Logica para calcular el total dependiendo de los productos que se vayan agregando
   async createItem(data) {
        // Destructuracion de objetos
        const { orderId, productId, amount } = data;

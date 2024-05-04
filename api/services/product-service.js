@@ -63,7 +63,7 @@ class ProductsService {
 
   }
 
-  async find() {
+  async find(query) {
     // --- Local results generated in constructor
 /*     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -77,7 +77,20 @@ class ProductsService {
     return data; */
 
     // Sequelize connection
-    const rta = await models.Product.findAll( { include:['category'] } );
+
+    const options = {
+      include:['category'],
+    }
+
+    // Hacemos limit y offset dinamicos segun si los incluyen en el request query param de la peticion o no
+    const {limit, offset} = query;
+
+    if (limit && offset) {
+      options.limit = parseInt(limit),
+      options.offset = parseInt(offset)
+    }
+
+    const rta = await models.Product.findAll(options);
     return rta;
 
   }
