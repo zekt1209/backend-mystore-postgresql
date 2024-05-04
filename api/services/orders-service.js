@@ -44,7 +44,8 @@ class OrdersService {
         {
           association: 'customer',
           include: ['user']
-        }
+        },
+        'items'
       ]
     });
 
@@ -117,6 +118,22 @@ class OrdersService {
 
   }
 
+  async createItem(data) {
+       // Destructuracion de objetos
+       const { orderId, productId, amount } = data;
+
+       const newItem = {
+         id: faker.string.nanoid(4),
+         orderId,
+         productId,
+         amount
+       }
+
+       // --- Sequelize Connection
+       const itemCreated = await models.OrdersProducts.create(newItem);
+       return itemCreated;
+  }
+
 
   async findOne(id) {
     // --- Local results generated in constructor
@@ -128,7 +145,7 @@ class OrdersService {
     return res.rows; */
 
     // --- Sequelize Connection
-    const order = await models.Order.findByPk(id);
+    const order = await models.Order.findByPk(id, );
     if (!order) {
       throw boom.notFound('Order not found.');
     }
@@ -174,7 +191,13 @@ class OrdersService {
     }; */
 
     // --- Sequelize Connection
-    const order = await this.findOne(id);
+    const order = await this.findOne(id, {include:[
+      {
+        association: 'customer',
+        include: ['user']
+      },
+      'items'
+    ]});
 
     // Si la orden fue encontrada, then
     const datasUpdate = [];

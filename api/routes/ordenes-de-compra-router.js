@@ -10,7 +10,7 @@ const service = new OrdersService();
 const validatorHandler = require('../middlewares/validator-handler');
 
 // Schemas for DTO Validators
-const { createOrderSchema, updateOrderSchema, getOrderSchema, deleteOrderSchema } = require('../schemas/order-schema');
+const { createOrderSchema, updateOrderSchema, getOrderSchema, deleteOrderSchema, addItemSchema } = require('../schemas/order-schema');
 const { getProductSchema } = require('../schemas/product-schema');
 
 // Endpoints Ordenes de compra
@@ -84,6 +84,30 @@ router.post('/',
     } catch (err) {
       res.status(404).json({message: `CustomMessage in orders router: request failed on function: POST`,
       error: err});
+    }
+  }
+);
+
+// Foreign many to many endpoint for 'orders-products' table
+router.post('/add-item',
+  validatorHandler(addItemSchema, 'body'),
+  async (req, res) => {
+
+    try {
+
+      const body = req.body;
+      const newItem = await service.createItem(body);
+
+      res.status(201).json({
+        message: 'item CREATED',
+        data: newItem,
+      });
+
+    } catch (err) {
+
+      res.status(404).json({message: `CustomMessage in orders router: request failed on function: POST`,
+      error: err});
+
     }
   }
 );
