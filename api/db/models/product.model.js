@@ -28,7 +28,7 @@ const ProductSchema = {
   },
   categoryId: {
     field: 'category_id',
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     references: {
       model: CATEGORY_TABLE,
