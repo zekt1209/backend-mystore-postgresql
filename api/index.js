@@ -11,7 +11,7 @@ const routerApi = require('./routes/index');
 app.use(express.json());
 
 // --- Dar acceso a ciertos dominios que no sean de nuestro origen -----
-/* const whiteList = ['http://localhost:8080', 'http://localhost:5500', 'https://backend-mystore-mysql.vercel.app'];
+const whiteList = ['http://localhost:8080', 'http://localhost:5500', 'https://backend-mystore-mysql.vercel.app'];
 
 const options = {
   origin: (origin, callback) => {
@@ -24,7 +24,7 @@ const options = {
   }
 };
 
-app.use(cors(options)); */
+app.use(cors(options));
 // ---------------------------------------------------------------------
 
 // Middleware rise endpoint
