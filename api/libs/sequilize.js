@@ -1,6 +1,8 @@
+const mysql2 = require('mysql2');
 const { Sequelize } = require('sequelize');
 const { config } = require('../config/config');
 const setupModels = require('./../db/models/index')
+
 
 const USER = encodeURIComponent(config.dbUser);
 const PASSWORD = encodeURIComponent(config.dbPassword);
@@ -16,6 +18,7 @@ let URI = 'mysql://root:VnlvwusBidnyttmmAMZeSZRSlWbTDhXk@roundhouse.proxy.rlwy.n
 // Option 3: Passing parameters separately (other dialects)
 const sequelize = new Sequelize(URI, {
   dialect: 'mysql',
+  dialectModule: mysql2,
   logging: console.log,
 });
 
