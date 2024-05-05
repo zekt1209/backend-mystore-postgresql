@@ -1,4 +1,5 @@
 const { faker } = require('@faker-js/faker');
+const { Op } = require('sequelize');
 const boom = require('@hapi/boom');
 
 const getPoolConnection = require('../libs/postgresql-pool');
@@ -80,14 +81,32 @@ class ProductsService {
 
     const options = {
       include:['category'],
+      where: {},
+      order: [],
     }
 
     // Hacemos limit y offset dinamicos segun si los incluyen en el request query param de la peticion o no
-    const {limit, offset} = query;
+    const {limit, offset, price, price_min, price_max} = query;
 
     if (limit && offset) {
-      options.limit = parseInt(limit),
-      options.offset = parseInt(offset)
+      options.limit = parseInt(limit);
+      options.offset = parseInt(offset);
+    }
+
+    // Filtrado por precio mediante query params (opcional si lo mandan o no)
+    if (price) {
+      options.where.price = price;
+    }
+
+    // Filtrado de rango de precios
+    if (price_min && price_max) {
+      options.where.price = {
+        // Nomenclatura de sequelize para utilizar los operadores en los queries de SQL >= y <=
+        [Op.gte]: price_min,
+        [Op.lte]: price_max,
+      };
+      options.order = []; // Limpiamos
+      options.order.push(['price', 'ASC']); // Aplicamos orden
     }
 
     const rta = await models.Product.findAll(options);
